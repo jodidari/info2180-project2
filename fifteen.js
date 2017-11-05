@@ -14,45 +14,38 @@ window.onload = function() {
     shuf.onclick = shuffle;
 
     while (i < puzzle.length) {
-        var x = parseInt(100 * (i % 4));
-        var y = parseInt(100 * parseInt(i / 4));
         puzzle[i].className = "puzzlepiece"; // set the regular style
-        puzzle[i].style.left = x + "px";
-        puzzle[i].style.top = y + "px";
-        puzzle[i].style.backgroundPosition = "-" + x + "px " + " " + "-" + y + "px";
-		
-        puzzle[i].addEventListener("mouseover", function() {
+        puzzle[i].style.left = ((i % 4) * 100) + "px";
+        puzzle[i].style.top = (parseInt(i / 4) * 100) + "px";
+        puzzle[i].style.backgroundPosition = "-" + puzzle[i].style.left + " " + "-" + puzzle[i].style.top; //set background
+        puzzle[i].addEventListener("mouseover", function() { //used to highlight or unhighlight a tile when cursor is placed on it or removed 
             if (movable(parseInt(this.innerHTML))) {
                 highlight(this);
             } else {
                 unhighlight(this);
             }
         });
-		
-        puzzle[i].onclick = function() {
+
+        puzzle[i].onclick = function() {//used to move a tile when clicked and also checks if the game is solved
 
             if (movable(parseInt(this.innerHTML))) {
                 swap(this.innerHTML - 1);
-                if (checkFinish()) {
-                    overall.innerHTML += '<div style="color:blue; font-size:20px; text-align: center;"> You Win! </div>';
+                if (checkFinish()) { //if the game is solved
+                    overall.innerHTML += '<div style="color:blue; font-size:24px; text-align: center;"> You Won! <img src="http://www.fileformat.info/info/unicode/char/1f44d/thumbs_up_sign.png" style="margin:auto" align="center"> </div>'; //displays you won and an image
                 }
             }
         };
         i++;
     }
-
-    xempty = "300px";
-    yempty = "300px";
-
 };
 
-function unhighlight(tile) {
+function unhighlight(tile) {// when the cursor is no longer hovering over the square, it should revert to its original state
 
     tile.setAttribute("class", 'puzzlepiece');
 
 }
 
-function highlight(tile) {
+function highlight(tile){ //changes appearance when the mouse hovers over a square
 
     tile.setAttribute('class', 'puzzlepiece movablepiece');
 
@@ -60,9 +53,9 @@ function highlight(tile) {
 
 function moveLeft(tileA, tileB) {
 
-    var pieceX = parseInt(tileA);
-    var pieceY = parseInt(tileB);
-	
+    pieceX = parseInt(tileA);
+    pieceY = parseInt(tileB);
+
     if (pieceX >= 1) {
         for (var j = 0; j < puzzle.length; j++) {
             if ((parseInt(puzzle[j].style.left) + 100 == pieceX) && (parseInt(puzzle[j].style.top) == pieceY)) {
@@ -75,12 +68,11 @@ function moveLeft(tileA, tileB) {
 }
 
 
-
 function moveRight(tileA, tileB) {
 
-    var pieceX = parseInt(tileA);
-    var pieceY = parseInt(tileB);
-	
+    pieceX = parseInt(tileA);
+    pieceY = parseInt(tileB);
+
     if (pieceX < 300) {
         for (var j = 0; j < puzzle.length; j++) {
             if ((parseInt(puzzle[j].style.left) - 100 == pieceX) && (parseInt(puzzle[j].style.top) == pieceY)) {
@@ -96,9 +88,9 @@ function moveRight(tileA, tileB) {
 
 function moveUp(tileA, tileB) {
 
-    var pieceX = parseInt(tileA);
-    var pieceY = parseInt(tileB);
-	
+    pieceX = parseInt(tileA);
+    pieceY = parseInt(tileB);
+
     if (pieceY >= 1) {
         for (var j = 0; j < puzzle.length; j++) {
             if (parseInt(puzzle[j].style.top) + 100 == pieceY && parseInt(puzzle[j].style.left) == pieceX) {
@@ -114,9 +106,9 @@ function moveUp(tileA, tileB) {
 
 function moveDown(tileA, tileB) {
 
-    var pieceX = parseInt(tileA);
-    var pieceY = parseInt(tileB);
-	
+    pieceX = parseInt(tileA);
+    pieceY = parseInt(tileB);
+
     if (pieceY < 300) {
         for (var j = 0; j < puzzle.length; j++) {
             if (parseInt(puzzle[j].style.top) - 100 == pieceY && parseInt(puzzle[j].style.left) == pieceX) {
@@ -128,7 +120,7 @@ function moveDown(tileA, tileB) {
     }
 }
 
-function movable(tile) {
+function movable(tile) {//checks if the clicked tile can be moved
     if (moveLeft(xempty, yempty) == (tile - 1)) {
         return true;
 
@@ -148,12 +140,12 @@ function movable(tile) {
 
 
 
-function swap(tile) {
+function swap(tile) {//swaps the empty tile and tile clicked
 
     var temp = puzzle[tile].style.top;
     puzzle[tile].style.top = yempty;
     yempty = temp;
-	
+
     var temp2 = puzzle[tile].style.left;
     puzzle[tile].style.left = xempty;
     xempty = temp2;
@@ -161,8 +153,8 @@ function swap(tile) {
 
 function shuffle() {
 
-    for (var count = 0; count < 100; count++) {
-        var random = Math.floor(Math.random() * 100) % 4;
+    for (var count = 0; count < 100; count++) {//shuffles a hundred times 
+        var random = Math.floor(Math.random() * 100) % 4;//used to randomly select where to move 
         if (random == 0) {
             var tmp = moveUp(xempty, yempty);
             if (tmp != -1) {
@@ -193,7 +185,7 @@ function shuffle() {
     }
 }
 
-function checkFinish() {
+function checkFinish() {//checks if the players has won
     var check = true;
 
     for (var i = 0; i < puzzle.length; i++) {
